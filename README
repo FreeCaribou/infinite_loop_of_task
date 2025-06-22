@@ -1,0 +1,35 @@
+# Infinite Loop Of Task
+
+Just a kind of "todo task" but for task to repeat (like household cleaning) and with reminder
+
+## TODO for v1
+
+- Create a new tasks
+- Add button to set "lastDone" at today
+- Modify a task
+
+
+## TODO for more
+
+- i18n for no french people
+- Batch to send email when a deadline is close
+- Add description to task
+
+
+## Stack
+
+Symfony (and Bootstrap)
+
+
+## Some usefull command
+
+"php bin/console make:entity" create or update an entity
+
+"php bin/console make:migration" prepar the migration to adapt the db to the change
+
+"php bin/console doctrine:migrations:migrate" apply the change to the db
+
+"php bin/console doctrine:fixtures:load" to load data in the db to test from the file AppFixtures.php
+
+"symfony server:start" launch the server
+

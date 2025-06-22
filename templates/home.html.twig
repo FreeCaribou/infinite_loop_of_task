@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+
+    <h1>Prochaines tâches à faire !</h1>
+
+    <table class="table">
+    <thead>
+        <tr>
+        <th scope="col">Quoi ?</th>
+        <th scope="col">Délais de base</th>
+        <th scope="col">Dernière fois que cela a été fait</th>
+        <th scope="col">Prochaine fois à faire</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in tasks %}
+            <tr class="{{ task.isDeadlinePast ? 'table-danger'}}">
+                <th scope="row">{{task.label}} </th>
+                <td>{{task.delay}}</td>
+                <td>
+                    {{task.lastDone ? task.lastDone |format_datetime(pattern: "dd/MM/yyyy") : ''}}
+                </td>
+                <td>{{task.lastDone ? task.nextTimeTodo |format_datetime(pattern: "dd/MM/yyyy") : 'Le plus vite possible'}}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+
+{% endblock %}
