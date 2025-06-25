@@ -4,8 +4,6 @@ Just a kind of "todo task" but for task to repeat (like household cleaning) and 
 
 ## TODO for v1
 
-- Create a new tasks
-- Add button to set "lastDone" at today
 - Modify a task
 
 
@@ -14,6 +12,8 @@ Just a kind of "todo task" but for task to repeat (like household cleaning) and 
 - i18n for no french people
 - Batch to send email when a deadline is close
 - Add description to task
+- History of the last done
+- Criteria to have better sort
 
 
 ## Stack
