@@ -23,18 +23,6 @@ class AppFixtures extends Fixture
         $manager->persist($task);
 
         $task = new Task();
-        $task->setLabel('Avant Draps');
-        $task->setDelay(28);
-        $task->setLastDone(\DateTime::createFromFormat('Y-m-d', '2025-02-03'));
-        $manager->persist($task);
-
-        $task = new Task();
-        $task->setLabel('Après Draps');
-        $task->setDelay(28);
-        $task->setLastDone(\DateTime::createFromFormat('Y-m-d', '2025-08-03'));
-        $manager->persist($task);
-
-        $task = new Task();
         $task->setLabel('Vitres');
         $task->setDelay(90);
         $manager->persist($task);
