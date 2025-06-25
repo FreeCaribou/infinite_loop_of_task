@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Task;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use DateTime;
+use DateInterval;
 
 /**
  * @extends ServiceEntityRepository<Task>
@@ -16,28 +18,45 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
-    //    /**
-    //     * @return Task[] Returns an array of Task objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findAllOrdered() {
+        $now = new DateTime();
+        $tasks = $this->findAll();
 
-    //    public function findOneBySomeField($value): ?Task
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        /**
+         * We calcul here the next time that the task need to be done
+         */
+        foreach ($tasks as $task) {
+            if ($task->getLastDone()) {
+                $nextTimeTodo = (new DateTime($task->getLastDone()->format('Y-m-d')))->add(new DateInterval('P'. $task->getDelay() .'D'));
+                $task->setNextTimeTodo($nextTimeTodo);
+                $interval = $now->diff($nextTimeTodo);
+                $task->setIsDeadlinePast($interval->invert == 1);
+            } else {
+                $task->setIsDeadlinePast(true);
+            }
+        }
+
+        /**
+         * The sort logic,
+         * On the top, the task withat last done
+         * Then the task with deadline in past, by order of least recent date
+         * Then the task to come, by order of most close to come today
+         */
+        usort($tasks, function($taskA, $taskB) {
+            if ($taskA->getIsDeadlinePast() && !$taskB->getIsDeadlinePast()) {
+                return -1;
+            }
+            if (!$taskA->getIsDeadlinePast() && $taskB->getIsDeadlinePast()) {
+                return 1;
+            }
+            if ($taskA->getIsDeadlinePast() && $taskB->getIsDeadlinePast()) {
+                return $taskA->getNextTimeTodo() > $taskB->getNextTimeTodo() ? 1 : -1;
+            }
+            return $taskA->getNextTimeTodo() < $taskB->getNextTimeTodo() ? -1 : 1;
+        });
+
+        return $tasks;
+    }
+
+
 }

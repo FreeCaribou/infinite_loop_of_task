@@ -7,51 +7,34 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Repository\TaskRepository;
 use Symfony\Component\HttpFoundation\Request;
-use DateTime;
-use DateInterval;
-
+use App\Form\TaskType;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Task;
 
 class HomeController extends AbstractController
 {
 
-    #[Route('/', name: 'home', methods: ['GET', 'POST'])]
-    public function home(TaskRepository $repo): Response
+    #[Route('/', name: 'home', methods: ['GET', 'POST', 'DELETE', 'PATCH'])]
+    public function home(TaskRepository $repo, Request $request, EntityManagerInterface $entityManager): Response
     {
-        $now = new DateTime();
-        $tasks = $repo->findAll();
-        foreach ($tasks as $task) {
-            if ($task->getLastDone()) {
-                $nextTimeTodo = (new DateTime($task->getLastDone()->format('Y-m-d')))->add(new DateInterval('P'. $task->getDelay() .'D'));
-                $task->setNextTimeTodo($nextTimeTodo);
-                $interval = $now->diff($nextTimeTodo);
-                $task->setIsDeadlinePast($interval->invert == 1);
-            } else {
-                $task->setIsDeadlinePast(true);
-            }
+        $newTask = new Task();
+        $form = $this->createForm(TaskType::class, $newTask);
+
+        // Verification if we have a new one
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $formTask = $form->getData();
+            $entityManager->persist($formTask);
+            $entityManager->flush();
+            $this->addFlash('success', 'Nouvelle tache ajoutée !');
+            return $this->redirectToRoute('home');
         }
 
-        /**
-         * The sort logic,
-         * On the top, the task withat last done
-         * Then the task with deadline in past, by order of least recent date
-         * Then the task to come, by order of most close to come today
-         */
-        usort($tasks, function($taskA, $taskB) {
-            if ($taskA->getIsDeadlinePast() && !$taskB->getIsDeadlinePast()) {
-                return -1;
-            }
-            if (!$taskA->getIsDeadlinePast() && $taskB->getIsDeadlinePast()) {
-                return 1;
-            }
-            if ($taskA->getIsDeadlinePast() && $taskB->getIsDeadlinePast()) {
-                return $taskA->getNextTimeTodo() > $taskB->getNextTimeTodo() ? 1 : -1;
-            }
-            return $taskA->getNextTimeTodo() < $taskB->getNextTimeTodo() ? -1 : 1;
-        });
+        $tasks = $repo->findAllOrdered();
 
         return $this->render('home.html.twig', [
             'tasks' => $tasks,
-            'now' => $now,
+            'form' => $form,
         ]);
     }
 
