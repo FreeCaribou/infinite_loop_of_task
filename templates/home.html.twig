@@ -11,6 +11,7 @@
         <th scope="col">Délais de base</th>
         <th scope="col">Dernière fois que cela a été fait</th>
         <th scope="col">Prochaine fois à faire</th>
+        <th scope="col">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -22,6 +23,15 @@
                     {{task.lastDone ? task.lastDone |format_datetime(pattern: "dd/MM/yyyy") : ''}}
                 </td>
                 <td>{{task.lastDone ? task.nextTimeTodo |format_datetime(pattern: "dd/MM/yyyy") : 'Le plus vite possible'}}</td>
+                <td>
+                    <a class="btn btn-success" href="{{ path('task-renew', {'id': task.id}) }}">
+                        <i class="bi bi-check2-circle"></i>
+                    </a>
+                    {# TODO make a validation ? #}
+                    <a class="btn btn-danger" href="{{ path('task-delete', {'id': task.id}) }}">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </td>
             </tr>
         {% endfor %}
     </tbody>
