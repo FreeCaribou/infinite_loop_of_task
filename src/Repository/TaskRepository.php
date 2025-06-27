@@ -38,8 +38,8 @@ class TaskRepository extends ServiceEntityRepository
 
         /**
          * The sort logic,
-         * On the top, the task withat last done
-         * Then the task with deadline in past, by order of least recent date
+         * On the top, the task with deadline in past
+         * Then the task with deadline in past, by order of delay, the little is the delay, the most on the top it will be
          * Then the task to come, by order of most close to come today
          */
         usort($tasks, function($taskA, $taskB) {
@@ -50,7 +50,7 @@ class TaskRepository extends ServiceEntityRepository
                 return 1;
             }
             if ($taskA->getIsDeadlinePast() && $taskB->getIsDeadlinePast()) {
-                return $taskA->getNextTimeTodo() > $taskB->getNextTimeTodo() ? 1 : -1;
+                return $taskA->getDelay() > $taskB->getDelay() ? 1 : -1;
             }
             return $taskA->getNextTimeTodo() < $taskB->getNextTimeTodo() ? -1 : 1;
         });
