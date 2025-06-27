@@ -5,15 +5,16 @@ Just a kind of "todo task" but for task to repeat (like household cleaning) and 
 ## TODO for v1
 
 - Modify a task
+- Add a urgency level for each task (like a delay of delay)
+- Add estimation of time for a task, to make better sort with it
+- i18n for no french people
 
 
 ## TODO for more
 
-- i18n for no french people
-- Batch to send email when a deadline is close
 - Add description to task
 - History of the last done
-- Criteria to have better sort
+- Batch to send email when a deadline is close
 
 
 ## Stack
