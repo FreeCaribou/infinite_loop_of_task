@@ -24,11 +24,11 @@
                     </td>
                     <td>{{task.lastDone ? task.nextTimeTodo |format_datetime(pattern: "dd/MM/yyyy") : 'Le plus vite possible'}}</td>
                     <td>
-                        <a class="btn btn-success" href="{{ path('task-renew', {'id': task.id}) }}">
+                        <a class="btn btn-success m-2" href="{{ path('task-renew', {'id': task.id}) }}">
                             <i class="bi bi-check2-circle"></i>
                         </a>
                         {# TODO make a validation ? #}
-                        <a class="btn btn-danger" href="{{ path('task-delete', {'id': task.id}) }}">
+                        <a class="btn btn-danger m-2" href="{{ path('task-delete', {'id': task.id}) }}">
                             <i class="bi bi-trash"></i>
                         </a>
                     </td>
@@ -40,7 +40,7 @@
 
     <div class="mt-5">
         <h2>Nouvelle tache<h2>
-        <div class="ms-2">
+        <div class="row">
             {{ form(form) }}
         </div>
     </div>
